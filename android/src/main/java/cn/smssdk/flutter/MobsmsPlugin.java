@@ -306,7 +306,7 @@ public class MobsmsPlugin implements MethodCallHandler {
   }
 
   final Handler mHandler = new Handler();
-  private void onSuccess(Result result, Map<String, Object> ret) {
+  private void onSuccess(final Result result, final Map<String, Object> ret) {
 	  mHandler.post(new Runnable() {
 		  @Override
 		  public void run() {
