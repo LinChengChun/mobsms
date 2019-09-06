@@ -1,6 +1,7 @@
 package cn.smssdk.flutter;
 
 import android.text.TextUtils;
+import android.os.Handler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -304,10 +305,16 @@ public class MobsmsPlugin implements MethodCallHandler {
   	SMSSDK.unregisterAllEventHandler();
   }
 
+  final Handler mHandler = new Handler();
   private void onSuccess(Result result, Map<String, Object> ret) {
-	  Map<String, Object> map = new HashMap<>();
-	  map.put("ret", ret);
-	  result.success(map);
+	  mHandler.post(new Runnable() {
+		  @Override
+		  public void run() {
+			  Map<String, Object> map = new HashMap<>();
+			  map.put("ret", ret);
+			  result.success(map);
+		  }
+	  });
   }
 
   private void onSdkError(Result result, String error) {
