@@ -317,37 +317,46 @@ public class MobsmsPlugin implements MethodCallHandler {
 	  });
   }
 
-  private void onSdkError(Result result, String error) {
-	  try {
-		  JSONObject errorJson = new JSONObject(error);
-		  int code = errorJson.optInt("status");
-		  String msg = errorJson.optString("detail");
-		  if (TextUtils.isEmpty(msg)) {
-			  msg = errorJson.optString("error");
-		  }
+  private void onSdkError(final Result result, final String error) {
+	  mHandler.post(new Runnable() {
+		  @Override
+		  public void run() {
+			  try {
+				  JSONObject errorJson = new JSONObject(error);
+				  int code = errorJson.optInt("status");
+				  String msg = errorJson.optString("detail");
+				  if (TextUtils.isEmpty(msg)) {
+					  msg = errorJson.optString("error");
+				  }
 
-		  Map<String, Object> errMap = new HashMap<>();
-		  errMap.put(KEY_CODE, code);
-		  errMap.put(KEY_MSG, msg);
+				  Map<String, Object> errMap = new HashMap<>();
+				  errMap.put(KEY_CODE, code);
+				  errMap.put(KEY_MSG, msg);
 
-		  Map<String, Object> map = new HashMap<>();
-		  map.put("err", errMap);
-		  result.success(map);
-	  } catch (JSONException e) {
-		  SMSSDKLog.e("Smssdk Flutter plugin internal error. msg= " + e.getMessage(), e);
-		  onInternalError(result,"Generate JSONObject error");
-	  }
-
+				  Map<String, Object> map = new HashMap<>();
+				  map.put("err", errMap);
+				  result.success(map);
+			  } catch (JSONException e) {
+				  SMSSDKLog.e("Smssdk Flutter plugin internal error. msg= " + e.getMessage(), e);
+				  onInternalError(result,"Generate JSONObject error");
+			  }
+		}
+	  });
 
   }
 
-	private void onInternalError(Result result, String errMsg) {
-		Map<String, Object> errMap = new HashMap<>();
-		errMap.put(KEY_CODE, BRIDGE_ERR);
-		errMap.put(KEY_MSG, ERROR_INTERNAL + errMsg);
+	private void onInternalError(final Result result, final String errMsg) {
+		mHandler.post(new Runnable() {
+		  @Override
+		  public void run() {
+			Map<String, Object> errMap = new HashMap<>();
+			errMap.put(KEY_CODE, BRIDGE_ERR);
+			errMap.put(KEY_MSG, ERROR_INTERNAL + errMsg);
 
-		Map<String, Object> map = new HashMap<>();
-		map.put("err", errMap);
-		result.success(map);
+			Map<String, Object> map = new HashMap<>();
+			map.put("err", errMap);
+			result.success(map);
+		  }
+	  });
 	}
 }
