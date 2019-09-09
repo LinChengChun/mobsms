@@ -317,7 +317,7 @@ public class MobsmsPlugin implements MethodCallHandler {
 	  });
   }
 
-  private void onSdkError(Result result, String error) {
+  private void onSdkError(final Result result, final String error) {
 	  try {
 		  mHandler.post(new Runnable() {
 			  @Override
@@ -346,7 +346,7 @@ public class MobsmsPlugin implements MethodCallHandler {
 
   }
 
-	private void onInternalError(Result result, String errMsg) {
+	private void onInternalError(final Result result, final String errMsg) {
 		mHandler.post(new Runnable() {
 			@Override
 			public void run() {
